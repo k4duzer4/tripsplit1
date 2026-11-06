@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 45 32% 96%;
+    --foreground: 166 28% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 200 28% 13%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 28% 13%;
+    --primary: 166 58% 27%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 155 23% 92%;
+    --secondary-foreground: 200 28% 18%;
+    --muted: 200 20% 95%;
+    --muted-foreground: 166 10% 41%;
+    --accent: 172 60% 94%;
+    --accent-foreground: 172 68% 28%;
+    --positive: 142 60% 40%;
+    --positive-foreground: 0 0% 100%;
+    --negative: 350 72% 58%;
+    --negative-foreground: 0 0% 100%;
+    --destructive: 350 72% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 158 15% 87%;
+    --input: 158 15% 84%;
+    --ring: 166 58% 27%;
+    --chart-1: 172 68% 42%;
+    --chart-2: 200 70% 52%;
+    --chart-3: 38 92% 55%;
+    --chart-4: 280 60% 60%;
+    --chart-5: 340 70% 58%;
+    --radius: 1.25rem;
+    --font-heading: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 200 28% 13%;
+    --sidebar-primary: 172 68% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 180 25% 95%;
+    --sidebar-accent-foreground: 200 28% 18%;
+    --sidebar-border: 200 18% 90%;
+    --sidebar-ring: 172 68% 38%;
+  }
+
+  .dark {
+    --background: 200 30% 8%;
+    --foreground: 0 0% 98%;
+    --card: 200 28% 11%;
+    --card-foreground: 0 0% 98%;
+    --popover: 200 28% 11%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 172 60% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 200 20% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 200 20% 16%;
+    --muted-foreground: 200 12% 65%;
+    --accent: 172 40% 18%;
+    --accent-foreground: 172 60% 80%;
+    --positive: 142 55% 50%;
+    --positive-foreground: 0 0% 100%;
+    --negative: 350 70% 65%;
+    --negative-foreground: 0 0% 100%;
+    --destructive: 350 70% 65%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 200 18% 20%;
+    --input: 200 18% 20%;
+    --ring: 172 60% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    background-image: radial-gradient(ellipse at 90% 0%, hsl(153 35% 89% / .5), transparent 45%);
+    min-width: 320px;
+  }
+  h1, h2, h3, h4 {
+    @apply font-heading tracking-tight;
+  }
+  button, a, input, select { -webkit-tap-highlight-color: transparent; }
+  button, input, select { font: inherit; }
+  :focus-visible { outline: 3px solid hsl(var(--ring) / .5); outline-offset: 4px; }
+  ::selection { background: hsl(155 45% 81%); }
+  select { @apply rounded-2xl border border-input bg-card px-3 py-2; }
+}
+
+@layer components {
+  .app-header { @apply sticky top-0 z-30 border-b border-border/60 bg-background/90 backdrop-blur-xl; }
+  .page-shell { @apply mx-auto w-full max-w-4xl px-4 sm:px-6; }
+  .eyebrow { @apply text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground; }
+  .surface { @apply rounded-3xl border border-border/80 bg-card; box-shadow: 0 5px 22px hsl(166 30% 15% / .035); }
+  .journey-panel {
+    @apply relative overflow-hidden rounded-[2rem] text-white;
+    background: radial-gradient(ellipse at 100% 0%, #438d72 0%, transparent 60%), #173f34;
+  }
+  .journey-panel::after { content: ''; position: absolute; width: 220px; height: 220px; right: -90px; bottom: -135px; border: 1px solid #ffffff25; border-radius: 50%; box-shadow: 0 0 0 32px #ffffff08, 0 0 0 65px #ffffff05; pointer-events: none; }
+  .status-chip { @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold; }
+  .empty-state { @apply surface flex flex-col items-center px-5 py-12 text-center; background-image: radial-gradient(circle, hsl(var(--border) / .7) 1px, transparent 1px); background-size: 18px 18px; }
+  .route-tabs { @apply flex gap-1 rounded-2xl border border-border bg-secondary/80 p-1.5; }
+  .route-tab { @apply flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-xl px-3 py-3 text-sm font-semibold text-muted-foreground transition-all; }
+  .route-tab[aria-selected='true'] { @apply bg-card text-primary shadow-sm; }
+  .action-error { @apply rounded-2xl border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive; }
+  .step-circle { @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold; }
+  .travel-card { @apply surface relative block overflow-hidden p-5 transition-all duration-200; }
+  .travel-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px hsl(166 30% 15% / .08); }
+  .travel-card::before { content: ''; position: absolute; left: 0; top: 25px; bottom: 25px; width: 4px; border-radius: 0 5px 5px 0; background: hsl(var(--primary)); }
+  .travel-card[data-finished='true']::before { background: #93a498; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+@layer utilities {
+  .fade-in-up {
+    animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .fade-in {
+    animation: fadeIn 0.4s ease-out both;
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes paper-flight {
+  0%, 100% { transform: translate(-1px, 2px) rotate(-7deg); }
+  50% { transform: translate(2px, -2px) rotate(3deg); }
+}
+@keyframes paper-trail { to { stroke-dashoffset: -20; } }
+.plane-flight { transform-origin: center; animation: paper-flight 1.8s ease-in-out infinite; }
+.plane-trail { animation: paper-trail 1.8s linear infinite; opacity: .5; }
+@media (prefers-reduced-motion: reduce) {
+  .plane-flight, .plane-trail { animation: none; }
+}
