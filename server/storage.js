@@ -16,7 +16,7 @@ export function queueEmail(message) { scope.getStore().emails.push(message); }
 
 export function createStorage({ connectionString = process.env.DATABASE_URL, dataDir = process.env.TRIPSPLIT_DATA_DIR || path.resolve('.data'), production = process.env.NODE_ENV === 'production', pool: suppliedPool } = {}) {
   if (production && !connectionString && !suppliedPool) throw new Error('DATABASE_URL ausente em produção.');
-  const pool = suppliedPool || (connectionString ? new pg.Pool({ connectionString, ssl: { rejectUnauthorized: true }, max: 3, connectionTimeoutMillis: 10000, idleTimeoutMillis: 10000, allowExitOnIdle: true }) : null);
+  const pool = suppliedPool || (connectionString ? new pg.Pool({ connectionString, ssl: { rejectUnauthorized: true, ca: fs.readFileSync(new URL('./prod-ca-2021.crt', import.meta.url), 'utf8') }, max: 3, connectionTimeoutMillis: 10000, idleTimeoutMillis: 10000, allowExitOnIdle: true }) : null);
   pool?.on('error', (error) => console.error('Database connection error:', error.code || 'unknown'));
   const dataFile = path.join(dataDir, 'tripsplit.json');
   let queue = Promise.resolve();
