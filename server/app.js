@@ -4,10 +4,8 @@ import { computeBalances, computePayments, paymentKey } from '../src/lib/settlem
 
 const appUrl = process.env.APP_URL || 'http://localhost:5173';
 const sessionTtlMs = Number(process.env.SESSION_TTL_HOURS || 168) * 60 * 60 * 1000;
-const verificationTtlMs = Number(process.env.VERIFICATION_TTL_MINUTES || 30) * 60 * 1000;
 const resetTtlMs = Number(process.env.RESET_TTL_MINUTES || 30) * 60 * 1000;
 const inviteTtlMs = Number(process.env.INVITE_TTL_DAYS || 30) * 24 * 60 * 60 * 1000;
-const localVerificationCode = process.env.NODE_ENV === 'production' ? null : process.env.LOCAL_VERIFICATION_CODE || '123456';
 
 function id() {
   return crypto.randomUUID();
@@ -202,20 +200,10 @@ async function handle(request, response) {
       const email = String(body.email || '').trim().toLowerCase();
       const password = String(body.password || '');
       if (!email || !email.includes('@') || password.length < 6) return error(response, 400, 'Informe um e-mail válido e uma senha com pelo menos 6 caracteres.');
-      if (database.users.some((user) => user.email === email) || database.pendingRegistrations.some((item) => item.email === email)) return error(response, 409, 'Este e-mail já está cadastrado.');
-      const code = localVerificationCode || String(crypto.randomInt(100000, 1_000_000));
-      database.pendingRegistrations.push({ email, passwordHash: hashPassword(password), codeHash: digest(code), expiresAt: expiresAt(verificationTtlMs), createdAt: new Date().toISOString() });
-      writeDatabase();
-      await sendEmail({ to: email, subject: 'Confirme sua conta Trip Split', text: `Seu código de confirmação é ${code}.` });
-      return json(response, 201, { pending: true, message: 'Enviamos um código para confirmar o cadastro.' });
-    }
-    if (request.method === 'POST' && parts[2] === 'verify') {
-      const email = String(body.email || '').trim().toLowerCase();
-      const pending = database.pendingRegistrations.find((item) => item.email === email && (item.codeHash || digest(item.code || '')) === digest(String(body.otpCode || '')) && !isExpired(item.expiresAt));
-      if (!pending) return error(response, 400, 'Código inválido ou expirado.');
-      const user = { id: id(), email, full_name: email.split('@')[0], passwordHash: pending.passwordHash, createdAt: new Date().toISOString() };
+      if (database.users.some((user) => user.email === email)) return error(response, 409, 'Este e-mail já está cadastrado.');
+      const user = { id: id(), email, full_name: email.split('@')[0], passwordHash: hashPassword(password), createdAt: new Date().toISOString() };
       database.users.push(user);
-      database.pendingRegistrations = database.pendingRegistrations.filter((item) => item !== pending);
+      database.pendingRegistrations = (database.pendingRegistrations || []).filter((item) => item.email !== email);
       writeDatabase();
       return json(response, 201, { access_token: createSession(user.id), user: publicUser(user) });
     }
@@ -230,19 +218,6 @@ async function handle(request, response) {
       if (token) database.sessions = (database.sessions || []).filter((session) => session.tokenHash !== digest(token));
       writeDatabase();
       return json(response, 204, {});
-    }
-    if (request.method === 'POST' && parts[2] === 'resend') {
-      const email = String(body.email || '').trim().toLowerCase();
-      const pending = database.pendingRegistrations.find((item) => item.email === email);
-      if (pending) {
-        const code = localVerificationCode || String(crypto.randomInt(100000, 1_000_000));
-        pending.codeHash = digest(code);
-        delete pending.code;
-        pending.expiresAt = expiresAt(verificationTtlMs);
-        writeDatabase();
-        await sendEmail({ to: email, subject: 'Novo código Trip Split', text: `Seu código de confirmação é ${code}.` });
-      }
-      return json(response, 200, { ok: true });
     }
     if (request.method === 'POST' && parts[2] === 'reset-request') {
       const email = String(body.email || '').trim().toLowerCase();
@@ -435,7 +410,7 @@ export function createHandler({ storage: configuredStorage } = {}) {
       const pathname = new URL(request.url, 'http://localhost').pathname;
       if (request.method === 'OPTIONS') return handle(request, response);
       storage ||= createStorage();
-      if (request.method === 'POST' && /^\/api\/auth\/(login|register|verify|resend|reset-request|reset)$/.test(pathname)) {
+      if (request.method === 'POST' && /^\/api\/auth\/(login|register|reset-request|reset)$/.test(pathname)) {
         const address = process.env.VERCEL ? String(request.headers['x-forwarded-for'] || '').split(',')[0].trim() : request.socket?.remoteAddress || 'local';
         const identity = String(request.body.email || '').trim().toLowerCase();
         const allowed = await storage.limit(digest(`address:${address}`), 100, 15 * 60 * 1000);
@@ -444,7 +419,7 @@ export function createHandler({ storage: configuredStorage } = {}) {
           response.setHeader('Retry-After', '900');
           return error(response, 429, 'Muitas tentativas. Aguarde alguns minutos e tente novamente.');
         }
-        if (process.env.NODE_ENV === 'production' && ['register', 'resend', 'reset-request'].includes(pathname.split('/').pop()) && (!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM)) {
+        if (process.env.NODE_ENV === 'production' && pathname.endsWith('/reset-request') && (!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM)) {
           return error(response, 503, 'O envio de e-mails ainda não está disponível. Tente novamente mais tarde.');
         }
       }

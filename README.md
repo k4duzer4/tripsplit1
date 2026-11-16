@@ -35,19 +35,13 @@ O frontend encaminha `/api` para `http://localhost:3001`. Os dados ficam persist
 
 ## Cadastro local
 
-No ambiente local, depois de informar e-mail e senha, confirme usando o código:
-
-```text
-123456
-```
-
-Para envio real, configure `RESEND_API_KEY` e `EMAIL_FROM` conforme `.env.example`. O login com Google permanece oculto até ser configurado.
+Depois de informar e-mail e senha, a conta é criada e a sessão começa imediatamente, sem confirmação por e-mail. O envio de e-mail é usado apenas para redefinir senha; configure `RESEND_API_KEY` e `EMAIL_FROM` conforme `.env.example`. O login com Google permanece oculto até ser configurado.
 
 ## API
 
 A API Node fornece:
 
-- Cadastro, confirmação local, login, sessão e logout;
+- Cadastro sem confirmação de e-mail, login, sessão e logout;
 - Criação, edição e exclusão de viagens;
 - Código de convite e entrada em uma viagem;
 - Cadastro e remoção de participantes;

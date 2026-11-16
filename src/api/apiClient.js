@@ -39,13 +39,11 @@ const auth = {
       return false;
     }
   },
-  register: ({ email, password }) => request('/api/auth/register', { method: 'POST', body: JSON.stringify({ email, password }) }),
-  verifyOtp: async ({ email, otpCode }) => {
-    const result = await request('/api/auth/verify', { method: 'POST', body: JSON.stringify({ email, otpCode }) });
+  register: async ({ email, password }) => {
+    const result = await request('/api/auth/register', { method: 'POST', body: JSON.stringify({ email, password }) });
     saveToken(result.access_token);
     return result;
   },
-  resendOtp: ({ email }) => request('/api/auth/resend', { method: 'POST', body: JSON.stringify({ email }) }),
   loginViaEmailPassword: async (email, password) => {
     const result = await request('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
     saveToken(result.access_token);

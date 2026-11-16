@@ -15,7 +15,7 @@ O Vercel hospeda a interface e a API serverless. O Supabase fornece o PostgreSQL
 
    - `DATABASE_URL`: conexão do Transaction pooler com a role `tripsplit_api`.
    - `APP_URL`: URL HTTPS final do projeto, sem barra no fim; ela é usada em CORS e nos links de redefinição de senha.
-   - `RESEND_API_KEY` e `EMAIL_FROM`: necessários para cadastro, reenvio de código e redefinição de senha em produção. O remetente precisa estar verificado no Resend.
+   - `RESEND_API_KEY` e `EMAIL_FROM`: opcionais para cadastro e login; necessários apenas para redefinição de senha por e-mail. O remetente precisa estar verificado no Resend.
 
 3. Não configure `VITE_` na URL do banco nem publique `.env.production.local`. Não é necessário definir `NODE_ENV`; o Vercel define o ambiente de produção.
 4. Faça o deploy e valide `https://SEU_DOMINIO/api/health`, cadastro por e-mail, login, criação de viagem e persistência após novo deploy.
