@@ -19,6 +19,7 @@ import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import FinishTrip from '@/pages/FinishTrip';
 import { LoadingScreen } from '@/components/PaperPlaneLoader';
+import AdRails from '@/components/AdRails';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth } = useAuth();
@@ -57,7 +58,9 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <ScrollToTop />
-          <AuthenticatedApp />
+          <AdRails>
+            <AuthenticatedApp />
+          </AdRails>
         </Router>
         <Toaster />
       </QueryClientProvider>

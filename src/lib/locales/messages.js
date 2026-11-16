@@ -1,6 +1,8 @@
 // Stable Portuguese keys never change persisted category values or user-authored content.
 const catalog = `
 Trip Split — Divida a viagem. Não a amizade.|Trip Split — Share the trip. Keep the friendship.|Trip Split — Comparte el viaje. Cuida la amistad.
+Publicidade|Advertisement|Publicidad
+Espaço para anúncio|Ad space|Espacio para anuncio
 Organize viagens em grupo, divida despesas e acerte as contas.|Organize group trips, share expenses and settle up.|Organiza viajes en grupo, comparte gastos y ajusta las cuentas.
 Não foi possível concluir a operação.|Unable to complete this action.|No se pudo completar esta acción.
 Não foi possível verificar a sessão.|Unable to verify your session.|No se pudo verificar tu sesión.

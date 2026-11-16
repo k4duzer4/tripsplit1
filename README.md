@@ -2,6 +2,8 @@
 
 Aplicação web para dividir despesas de viagens em grupo e gerar o acerto final com o menor número de transferências.
 
+As telas de início e de viagem reservam dois espaços laterais para publicidade em telas largas. No momento são apenas espaços reservados: não carregam scripts de terceiros, pop-ups, links nem redirecionamentos.
+
 ## Requisitos
 
 - Node.js 20 ou superior
